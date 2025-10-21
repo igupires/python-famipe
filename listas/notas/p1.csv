@@ -1,41 +1,39 @@
-Nome,Nota
-Aluno_1,12.3
-Aluno_2,67.68
-Aluno_3,36.9
-Aluno_4,55.36
-Aluno_5,30.75
-Aluno_6,36.92
-Aluno_7,55.36
-Aluno_8,55.36
-Aluno_9,61.51
-Aluno_10,30.75
-Aluno_11,12.3
-Aluno_12,24.63
-Aluno_13,30.77
-Aluno_14,49.23
-Aluno_15,12.3
-Aluno_16,24.6
-Aluno_17,36.92
-Aluno_18,18.48
-Aluno_19,36.9
-Aluno_20,12.32
-Aluno_21,49.21
-Aluno_22,67.7
-Aluno_23,18.47
-Aluno_24,67.69
-Aluno_25,36.93
-Aluno_26,67.69
-Aluno_27,36.93
-Aluno_28,67.69
-Aluno_29,55.39
-Aluno_30,12.3
-Aluno_31,61.53
-Aluno_32,30.76
-Aluno_33,49.22
-Aluno_34,43.08
-Aluno_35,30.77
-Aluno_36,43.07
-Aluno_37,18.45
-Aluno_38,36.9
-Aluno_39,36.92
-Aluno_40,18.45
+Matrícula,Nome,P1,L1,A1
+T202520164,Ana Julia Martins Costa,12.3,20.0,32.3
+T202520160,Anna Júlia Ventura da Conceição,67.68,12.0,79.68
+T202520166,Antony Faria Lourenço Santana Silva,36.9,16.0,52.9
+T202520158,Arianne da Silva Oliveira,55.36,20.0,75.36
+T202520156,Arthur de Araújo Alverez Carvalho,30.75,18.0,48.75
+T202520179,Bárbara Celestina Oza,36.92,16.0,52.92
+T202520157,Caio Mendonça Monsores,55.36,0.0,55.36
+T202520174,Daniel de Souza Araujo,55.36,20.0,75.36
+T202520169,Daniel Rocha Brito,61.51,20.0,81.50999999999999
+T202520098,Edson Lima Brasil Júnior,30.75,18.0,48.75
+T202520172,Emmily Goulart Costa,12.3,14.0,26.3
+T202520176,Fabiano Lisboa Ignacio,24.63,16.0,40.629999999999995
+T202520171,Gabriel Brito de Almeida,30.77,20.0,50.769999999999996
+T202520183,Gabriel de Jesus da Silva,49.23,12.0,61.23
+T202520151,Gabriely Vieira Ignacio de Proença Vianna,12.3,16.0,28.3
+T202520161,Giovana Nicolli dos Santos Silva,24.6,20.0,44.6
+T202520170,Jhonatan de Paula Matos de Azevedo,36.92,18.0,54.92
+T202520159,João Gabriel Pereira Rosa,18.48,18.0,36.480000000000004
+T202520168,João Vitor Braga da Conceição,36.9,20.0,56.9
+T202520182,José Pereira Leite Júnior,12.32,0.0,12.32
+T202520057,Lucas da Silva Soutto,49.21,20.0,69.21000000000001
+T202520049,Luciene de Moura,67.7,20.0,87.7
+T202520167,Ludmila Fernanda da Silva,18.47,20.0,38.47
+T202520089,Maiara Carius Alves,67.69,16.0,83.69
+T202520173,Maria Luiza Silveira Alves,36.93,14.0,50.93
+T202520052,Marya Paula de Moura Brito,67.69,18.0,85.69
+T202520121,Matheus Barbosa Silva,55.38,20.0,75.38
+T202520146,Natasha de Almeida Gonçalves Bizerra,12.3,0.0,12.3
+T202520070,Rafaela Costa de Almeida,61.53,20.0,81.53
+T202520147,Raquel Bezerra Pimenta da Silva,30.76,20.0,50.760000000000005
+T202520109,Raquel Costa de Souza Silva,49.22,16.0,65.22
+T202520180,Renata Silva do Vale,43.08,4.0,47.08
+T202520184,Ruan Felipe Oliveira de Bastos,30.77,20.0,50.769999999999996
+T202520177,Sophia Oza Rocha da Silva,43.07,12.0,55.07
+T202520175,Theodoro Baltar Varão,18.45,16.0,34.45
+T202520107,Thiago Barbosa Silva,36.9,16.0,52.9
+T202520163,Yasmin de Araujo Bitencourt,36.92,20.0,56.92
+T202520181,Yuri Rodrigues,18.45,20.0,38.45
