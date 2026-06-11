@@ -11,6 +11,9 @@ class Collaborator:
     def __init__(self, id: str, name: str):
         self.name = name
         self.object_id = id
+        
+    def __repr__(self):
+        return f"{self.name} [id: {self.object_id}]"
 
     @staticmethod
     def list_collaborators():
@@ -34,9 +37,10 @@ class Collaborator:
         collaborator_map  = {}
         collabotartors_id = {}
         for collab in list:
-            name = " ".join(collab.get("name", "").lower().strip().split(" ")[:2])
+            name = collab.get("name", "")
+            name_2 = " ".join(name.split(" ")[:2])
             id = collab.get("id", "")
-            collaborator_map[name] = Collaborator(id, name)
+            collaborator_map[name_2] = Collaborator(id, name)
             collabotartors_id[id] = Collaborator(id, name)
         
         Collaborator.COLLABORATORS = collaborator_map
