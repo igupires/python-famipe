@@ -6,8 +6,9 @@ from datetime import datetime
 
 # --- Local imports ---
 from collaborator import Collaborator
+from jira_statuses import JiraStatus
 from issue import Issue
-from log import LOG, print_log
+from log import LOG, print_log, decode_request_body
 from sync import Sync
 from anytype import TAG_DICT
 
@@ -34,7 +35,7 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
     """
     # 1. Read CSV using pandas
     try:
-        df = pd.read_csv(csv_path,encoding="utf-8")
+        df = pd.read_csv(csv_path)
     except FileNotFoundError:
         print_log(f"Error: Could not find the file {csv_path}")
         return
@@ -43,9 +44,13 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
     for index, row in df.iterrows():
         print_log(f" - {row.get('Chave da item', 'N/A')}: {row.get('Resumo', 'N/A')} ")
     
-    # 2. Reads colaborators form Anytype
+    # 2.1 Reads colaborators form Anytype
     print_log(f"Found {len(Collaborator.COLLABORATORS)} collaborators in Anytype.")
-    print_log("Collaborators: \n", Collaborator.COLLABORATORS)
+    print_log(" Collaborators: \n", Collaborator.COLLABORATORS)
+    
+    # 2.2 Reads Jira statuses form Anytype
+    print_log(f"Found {len(JiraStatus.JIRA_STATUSES)} Jira statuses in Anytype.")
+    print_log(" Jira statuses: \n", JiraStatus.JIRA_STATUSES)
     
     skip_count, update_count, create_count, error_count = 0, 0, 0, 0
     
@@ -55,14 +60,14 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
     # 3. Iterate through the rows
     # Assuming CSV has columns: Title, Description, Status, Tipo de item,
     # Chave da item, Responsável, Campo personalizado (Tester), Resumo, Relator
-    print_log("\nProcessing issues...")
+    print_log(" Processing issues...")
     for index, row in df.iterrows():
         tipo = str(row.get('Tipo de item', ''))
         chave = str(row.get('Chave da item', ''))
         responsavel = " ".join(str(row.get('Responsável', '')).split(" ")[:2])
-        tester = str(row.get('Campo personalizado (Tester)', ''))
+        tester = [" ".join(str(row.get('Campo personalizado (Tester)', '')).split(" ")[:2])]
+        relator = " ".join(str(row.get('Relator', '')).split(" ")[:2])
         resumo = str(row.get('Resumo', ''))
-        relator = str(row.get('Relator', ''))
         status = str(row.get('Status', ''))
         last_updated = get_date_from_brazilian_format(str(row.get('Atualizado(a)', '')))
         sprints = []
@@ -71,7 +76,7 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
         desenvolverdores_title = "Campo personalizado (Desenvolvedor)"
         count = 1
         while desenvolverdores_title in row:
-            desenvolverdores = [str(dev) for dev in str(row.get(desenvolverdores_title, '')).split(",") if str(dev).strip()]
+            desenvolverdores = [str(dev) for dev in str(row.get(desenvolverdores_title, '')).split(",") if str(dev)]
             count += 1
             desenvolverdores_title = f"Campo personalizado (Desenvolvedor)_{count}"
         
@@ -87,12 +92,10 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
             count += 1
             aux = f".{count}"
         
-        print_log(f"\nProcessing: [{', '.join(sprints)}] {chave} - {resumo}")
+        print_log(f" Processing: [{', '.join(sprints)}] {chave} - {resumo}")
         
         # 3. Verify if tracked
         issue = Issue.get_issue_by_title(chave)
-        
-        print_log(f" ID: {issue.object_id}")
         try:
             if issue is not None:
                 # 4a. Update tracked issue if update is latter than last update in Anytype
@@ -102,22 +105,24 @@ def sync_csv_to_anytype(csv_path: str, force_update: bool = False):
                     skip_count += 1
                 else:
                     issue.update_issue(sprints, status, chave, tipo, desenvolverdores, tester, resumo, relator, force_update)
-                    print_log(" Update successful.")
+                    print_log(" Issue update successful.")
                     update_count += 1
             else:
                 # 4b. Create untracked issue
                 print_log(" Issue not found in Anytype. Creating new object...")
                 issue =Issue(sprints, status, chave, tipo, desenvolverdores, tester, resumo, relator)
-                print_log(" Creation successful.")
+                print_log(" Issue creation successful.")
                 create_count += 1
         
             issues.append(issue)        
         except requests.exceptions.RequestException as e:
+            body = getattr(e.request, 'body', None)
+            body = decode_request_body(body)
             print_log(f" API > Issue Error processing '{chave}': `{e}`")
-            print_log(f" Payload: {e.request.body}")
+            print_log(f" Payload: {body}")
             error_count += 1
 
-    print_log(f"\nSync completed. Summary:")
+    print_log(f" SYNC completed. Summary:")
     print_log(f" - Updated: {update_count}")
     print_log(f" - Created: {create_count}")
     print_log(f" - Errors: {error_count}")
@@ -131,6 +136,9 @@ if __name__ == "__main__":
     
     # Ensure collaborators are listed and available for lookup
     Collaborator.list_collaborators()
+    
+    #Ensure Jira statuses are listed and available for lookup
+    JiraStatus.list_jira_statuses()
     
     if args:
         for input in args:
