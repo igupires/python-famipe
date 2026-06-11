@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 
 # --- Local imports ---
-from log import print_log
+from log import print_log, decode_request_body
 
 # --- Configuration ---
 from anytype import ANYTYPE_API_URL, SPACE_ID, HEADERS, JIRA_BASE_URL, TAG_DICT
@@ -23,8 +23,14 @@ class Task:
 
         payload = self.__create_payload()
 
-        response = requests.post(create_url, headers=HEADERS, json=payload)
-        response.raise_for_status()
+        try:
+            response = requests.post(create_url, headers=HEADERS, json=payload)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            body = decode_request_body(getattr(e.request, 'body', None))
+            print_log(f" API > Task Error processing '{self.chave}': {e}")
+            print_log(f" Payload: {body}")
+            raise
 
         self.response_json = response.json()
         self.object_id = self.response_json.get("object", {}).get("id")
@@ -49,9 +55,10 @@ class Task:
         return {
             "name": f"{self.chave}: {self.resumo}",
             "body": f"**URL**: [{JIRA_BASE_URL}{self.chave}]({JIRA_BASE_URL}{self.chave})",
+            "type_key": "task",
             "properties": [
-                {"key": "tag", "multi_select": self.sprints},
-                {"key": "url", "format": "text", "text": f"{JIRA_BASE_URL}{self.chave}"}
+                {"key": "bafyreiesx2xupjll5yrzversardre7obg5cavsetlsrdxylonw6pj2qaia", "multi_select": self.sprints},
+                {"key": "bafyreihok7nqj6j6ynot64a25wacti4gzzy72h2kraq3hfynf3jalywbxe", "format": "text", "text": f"{JIRA_BASE_URL}{self.chave}"}
             ]
         }
 
@@ -62,8 +69,8 @@ class Task:
         return {
             "name": f"{self.chave}: {self.resumo}",
             "properties": [
-                {"key": "tag", "multi_select": self.sprints},
-                {"key": "url", "format": "text", "text": f"{JIRA_BASE_URL}{self.chave}"}
+                {"key": "bafyreiesx2xupjll5yrzversardre7obg5cavsetlsrdxylonw6pj2qaia", "multi_select": self.sprints},
+                {"key": "bafyreihok7nqj6j6ynot64a25wacti4gzzy72h2kraq3hfynf3jalywbxe", "format": "text", "text": f"{JIRA_BASE_URL}{self.chave}"}
             ]
         }
     
@@ -77,11 +84,16 @@ class Task:
         self.resumo = resumo
         
         payload = self.__update_payload()
-        print_log(f" Updating task '{self.chave}' with payload: {payload}")
         
         # Updating usually utilizes a PATCH request in standard REST implementations
-        response = requests.patch(update_url, headers=HEADERS, json=payload)
-        response.raise_for_status()
+        try:
+            response = requests.patch(update_url, headers=HEADERS, json=payload)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            body = decode_request_body(getattr(e.request, 'body', None))
+            print_log(f" API > Task Update Error processing '{self.chave}': {e}")
+            print_log(f" Payload: {body}")
+            raise
         return response.json()
         
     @staticmethod
